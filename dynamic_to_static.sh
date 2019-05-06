@@ -41,7 +41,10 @@ usage()
   exit 0
 }
 
-# parse command line arguments
+#check the number of arguments, at least one
+[ $# -le 0 ] && usage
+
+#parse command line arguments
 while getopts "ht:C:c:" OPT ; do
   case ${OPT} in
     t) TARGET_TRIPLE=$OPTARG ;;
@@ -54,7 +57,7 @@ shift "$((OPTIND -1))"
 INPUT_FILE="$@"
 
 #check if the file exists
-if [ ! -f $INPUT_FILE ] ; then
+if [ ! -f "$INPUT_FILE" ] ; then
   echo "file ERROR: ${INPUT_FILE} doesn't exist"
   exit 1
 fi
@@ -175,7 +178,7 @@ if [ $? != 0 ] ; then
 fi
 
 #static linking to TARGET_ARCH
-OUTPUT=$( ${TARGET_COMPILER} -o ${PATH_FILE}-${TARGET_ARCH} -target ${TARGET_TRIPLE} ${PATH_FILE}.${TARGET_ARCH}.o -static 2>&1 )
+OUTPUT=$( ${TARGET_COMPILER} -v -o ${PATH_FILE}-${TARGET_ARCH} -target ${TARGET_TRIPLE} ${PATH_FILE}.${TARGET_ARCH}.o -static 2>&1 )
 if [ $? != 0 ] ; then
   echo "compiler ERROR: $OUTPUT"
   exit 1
