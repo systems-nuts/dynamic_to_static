@@ -150,7 +150,9 @@ mv ${PATH_FILE}.bc ${PATH_FILE}.bc-orig
 mv ${PATH_FILE}.ll ${PATH_FILE}.ll-orig
 
 #fixing the got table
-./fix_got_plt.py ${SRC_COMPILER} ${PATH_FILE}.ll-orig &> ${PATH_FILE}.ll 
+SCRIPT_PATH=$( readlink -f $0 )
+echo $SCRIPT_PATH
+${SCRIPT_PATH%/*}/fix_got_plt.py ${SRC_COMPILER} ${PATH_FILE}.ll-orig &> ${PATH_FILE}.ll 
 if [ $? != 0 ] ; then
   echo "fixer ERROR: " `cat ${PATH_FILE}.ll`
   rm ${PATH_FILE}.ll
