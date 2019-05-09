@@ -30,14 +30,13 @@ DEFAULT_COMPILER="clang"
 #the triple for the static linking
 DEFAULT_TARGET_TRIPLE=`clang -dumpmachine`
 
-
 ###############################################################################
 # main
 ###############################################################################
 
 usage()
 {
-  echo "Usage: $0 [-C sourceCompiler] [-t targetTriple] [-c targetCompiler] binary"
+  echo "Usage: $0 [-C sourceCompiler] [-t targetTriple] [-c targetCompiler] [-f targetCompilerFlags] binary"
   exit 0
 }
 
@@ -45,11 +44,12 @@ usage()
 [ $# -le 0 ] && usage
 
 #parse command line arguments
-while getopts "ht:C:c:" OPT ; do
+while getopts "ht:C:c:f:" OPT ; do
   case ${OPT} in
     t) TARGET_TRIPLE=$OPTARG ;;
     C) SRC_COMPILER=$OPTARG ;;
     c) TARGET_COMPILER=$OPTARG ;;
+    f) TARGET_FLAGS=$OPTARG ;;
     *) usage ;;
   esac
 done
@@ -179,7 +179,7 @@ if [ $? != 0 ] ; then
 fi
 
 #static linking to TARGET_ARCH
-OUTPUT=$( ${TARGET_COMPILER} -v -o ${PATH_FILE}-${TARGET_ARCH} -target ${TARGET_TRIPLE} ${PATH_FILE}.${TARGET_ARCH}.o -static 2>&1 )
+OUTPUT=$( ${TARGET_COMPILER} -v -o ${PATH_FILE}-${TARGET_ARCH} -target ${TARGET_TRIPLE} ${PATH_FILE}.${TARGET_ARCH}.o ${TARGET_FLAGS} -static 2>&1 )
 if [ $? != 0 ] ; then
   echo "compiler ERROR: $OUTPUT"
   exit 1
