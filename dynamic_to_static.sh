@@ -178,11 +178,21 @@ if [ $? != 0 ] ; then
   exit 1
 fi
 
-#static linking to TARGET_ARCH
-OUTPUT=$( ${TARGET_COMPILER} -v -o ${PATH_FILE}-${TARGET_ARCH} -target ${TARGET_TRIPLE} ${PATH_FILE}.${TARGET_ARCH}.o ${TARGET_FLAGS} -static 2>&1 )
-if [ $? != 0 ] ; then
-  echo "compiler ERROR: $OUTPUT"
-  exit 1
+if [ ${TARGET_COMPILER} = "*clang*" ] ; then
+  #static linking to TARGET_ARCH
+  OUTPUT=$( ${TARGET_COMPILER} -v -o ${PATH_FILE}-${TARGET_ARCH} -target ${TARGET_TRIPLE} ${PATH_FILE}.${TARGET_ARCH}.o ${TARGET_FLAGS} -static 2>&1 )
+  if [ $? != 0 ] ; then
+    echo "compiler ERROR: $OUTPUT"
+    exit 1
+  fi
+else
+  #  OUTPUT=$( ${TARGET_TRIPLE}-${TARGET_COMPILER} -v -o ${PATH_FILE}-${TARGET_ARCH} ${PATH_FILE}.${TARGET_ARCH}.o ${TARGET_FLAGS} -static 2>&1 )
+  OUTPUT=$( ${TARGET_COMPILER} -v -o ${PATH_FILE}-${TARGET_ARCH} ${PATH_FILE}.${TARGET_ARCH}.o ${TARGET_FLAGS} -static 2>&1 )
+  if [ $? != 0 ] ; then
+    echo "compiler ERROR: $OUTPUT"
+    exit 1
+  fi
 fi
+
 
 echo Output ${PATH_FILE}-${TARGET_ARCH}
