@@ -5,6 +5,10 @@
 #
 # Antonio Barbalace, Stevens 2019
 
+# sourceCompiler can be automatically identified by this script
+# targetTriple to which the code must compiled
+# targetCompiler for linking (the LLVM IR is compiled by clang)
+# targetCompilerFlags used for compilation and linking
 
 #remill/mcsema parameters
 DISASSEMBLER=~/ida-7.2/idat64
@@ -172,7 +176,7 @@ fi
 echo Static compilation to ${TARGET_ARCH}
 
 #recompile it to TARGET_ARCH
-OUTPUT=$( clang -c -v ${PATH_FILE}.bc -target ${TARGET_TRIPLE} -o ${PATH_FILE}.${TARGET_ARCH}.o 2>&1 ) 
+OUTPUT=$( clang -c -v ${PATH_FILE}.bc -target ${TARGET_TRIPLE} ${TARGET_FLAGS} -o ${PATH_FILE}.${TARGET_ARCH}.o 2>&1 ) 
 if [ $? != 0 ] ; then
   echo "llc ERROR: $OUTPUT"
   exit 1
